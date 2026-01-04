@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sara Between Demon Hunters</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-C4PCo6M4.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Cza2hxyg.css">
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="gameCanvas"></canvas>
+      <div id="ui-layer">
+        <div id="start-screen" class="screen">
+          <h1>Sara Between Demon Hunters</h1>
+          <p>Help Sara collect treats and high-five friends!</p>
+          <button id="start-btn">Start Adventure!</button>
+          <p class="instructions">Mobile: Tap to Jump<br>Desktop: Space or Click</p>
+        </div>
+        <div id="game-over-screen" class="screen hidden">
+          <h1>Great Job!</h1>
+          <p>Score: <span id="final-score">0</span></p>
+          <button id="restart-btn">Play Again</button>
+        </div>
+        <div id="hud" class="hidden">
+           <div class="score-container">High Fives: <span id="score">0</span></div>
+           <div class="health-container">Cheer: <span id="health">❤️❤️❤️</span></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
