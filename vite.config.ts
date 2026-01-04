@@ -7,5 +7,6 @@ export default defineConfig({
         fs: {
             strict: false
         }
-    }
+    },
+    base: '/sara_game/' // Matches repository name https://github.com/kpndavi/sara_game
 });
