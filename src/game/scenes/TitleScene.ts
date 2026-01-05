@@ -14,7 +14,21 @@ export class TitleScene implements Scene {
     init(): void {
         console.log("DEBUG: TitleScene Init");
         this.createUI();
-        window.addEventListener('click', this.handleClick); // Fix: Use stable reference
+        this.sceneManager.getCanvas().addEventListener('pointerup', this.handleInput);
+    }
+
+    handleInput = (event: PointerEvent) => {
+        const canvas = this.sceneManager.getCanvas();
+        const rect = canvas.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
+        const clickY = event.clientY - rect.top;
+
+        for (const btn of this.buttons) {
+            if (clickX >= btn.x && clickX <= btn.x + btn.width &&
+                clickY >= btn.y && clickY <= btn.y + btn.height) {
+                btn.action();
+            }
+        }
     }
 
     createUI() {
@@ -42,23 +56,10 @@ export class TitleScene implements Scene {
                 action: () => {
                     GameState.getInstance().currentSlot = slot;
                     GameState.getInstance().load();
-                    // Go to Character Creator (Flow: Login -> Creator -> GameMenu)
                     this.sceneManager.switchScene(new CharacterCreatorScene(this.sceneManager));
                 }
             });
         });
-    }
-
-    handleClick = (event: MouseEvent) => { // Fix: Arrow function
-        const clickX = event.clientX;
-        const clickY = event.clientY;
-
-        for (const btn of this.buttons) {
-            if (clickX >= btn.x && clickX <= btn.x + btn.width &&
-                clickY >= btn.y && clickY <= btn.y + btn.height) {
-                btn.action();
-            }
-        }
     }
 
     update(_deltaTime: number): void { }
@@ -82,19 +83,22 @@ export class TitleScene implements Scene {
             // Shadow
             ctx.fillStyle = 'rgba(0,0,0,0.2)';
             ctx.beginPath();
-            ctx.roundRect(btn.x + 10, btn.y + 10, btn.width, btn.height, 20);
+            if (ctx.roundRect) ctx.roundRect(btn.x + 10, btn.y + 10, btn.width, btn.height, 20);
+            else ctx.rect(btn.x + 10, btn.y + 10, btn.width, btn.height);
             ctx.fill();
 
             // Card
             ctx.fillStyle = btn.color;
             ctx.beginPath();
-            ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 20);
+            if (ctx.roundRect) ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 20);
+            else ctx.rect(btn.x, btn.y, btn.width, btn.height);
             ctx.fill();
 
             // White Inner
             ctx.fillStyle = 'rgba(255,255,255,0.3)';
             ctx.beginPath();
-            ctx.roundRect(btn.x + 10, btn.y + 10, btn.width - 20, btn.height - 80, 15);
+            if (ctx.roundRect) ctx.roundRect(btn.x + 10, btn.y + 10, btn.width - 20, btn.height - 80, 15);
+            else ctx.rect(btn.x + 10, btn.y + 10, btn.width - 20, btn.height - 80);
             ctx.fill();
 
             // Avatar Placeholder (Circle)
@@ -115,6 +119,6 @@ export class TitleScene implements Scene {
     }
 
     cleanup(): void {
-        window.removeEventListener('click', this.handleClick); // Fix: Remove stable reference
+        this.sceneManager.getCanvas().removeEventListener('pointerup', this.handleInput);
     }
 }
