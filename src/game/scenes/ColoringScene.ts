@@ -48,7 +48,17 @@ export class ColoringScene implements Scene {
             new URL('../../assets/coloring_page_2.png', import.meta.url).href,
             new URL('../../assets/coloring_page_3.png', import.meta.url).href,
             new URL('../../assets/coloring_page_castle.png', import.meta.url).href,
-            new URL('../../assets/coloring_page_dragon.png', import.meta.url).href
+            new URL('../../assets/coloring_page_dragon.png', import.meta.url).href,
+            new URL('../../assets/coloring_page_unicorn.png', import.meta.url).href,
+            new URL('../../assets/coloring_page_mermaid.png', import.meta.url).href,
+            new URL('../../assets/coloring_page_fairy_house.png', import.meta.url).href,
+            new URL('../../assets/coloring_page_princess.png', import.meta.url).href,
+            new URL('../../assets/coloring_page_kitten.png', import.meta.url).href,
+            new URL('../../assets/coloring_page_puppy.png', import.meta.url).href,
+            new URL('../../assets/coloring_page_butterfly.png', import.meta.url).href,
+            new URL('../../assets/coloring_page_dolphin.png', import.meta.url).href,
+            new URL('../../assets/coloring_page_owl.png', import.meta.url).href,
+            new URL('../../assets/coloring_page_cupcake.png', import.meta.url).href
         ];
 
         let loadedCount = 0;
