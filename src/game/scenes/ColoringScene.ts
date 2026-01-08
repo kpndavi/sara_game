@@ -9,16 +9,52 @@ export class ColoringScene implements Scene {
 
     // Tools
     private currentColor: { r: number, g: number, b: number } = { r: 255, g: 0, b: 0 }; // Default Red
+    // Extended Palette (33 Colors)
     private colors = [
-        { hex: "#ff0000", rgb: { r: 255, g: 0, b: 0 } },
-        { hex: "#00ff00", rgb: { r: 0, g: 255, b: 0 } },
-        { hex: "#0000ff", rgb: { r: 0, g: 0, b: 255 } },
-        { hex: "#ffff00", rgb: { r: 255, g: 255, b: 0 } },
-        { hex: "#ff00ff", rgb: { r: 255, g: 0, b: 255 } },
-        { hex: "#00ffff", rgb: { r: 0, g: 255, b: 255 } },
-        { hex: "#ffa500", rgb: { r: 255, g: 165, b: 0 } },
-        { hex: "#a52a2a", rgb: { r: 165, g: 42, b: 42 } },
-        { hex: "#ffffff", rgb: { r: 255, g: 255, b: 255 } }
+        // Reds / Pinks
+        { hex: "#ff0000", rgb: { r: 255, g: 0, b: 0 } },      // Red
+        { hex: "#dc143c", rgb: { r: 220, g: 20, b: 60 } },    // Crimson
+        { hex: "#ff69b4", rgb: { r: 255, g: 105, b: 180 } },  // Hot Pink
+        { hex: "#ffc0cb", rgb: { r: 255, g: 192, b: 203 } },  // Pink
+        { hex: "#fa8072", rgb: { r: 250, g: 128, b: 114 } },  // Salmon
+
+        // Oranges / Yellows
+        { hex: "#ff4500", rgb: { r: 255, g: 69, b: 0 } },     // Orange Red
+        { hex: "#ffa500", rgb: { r: 255, g: 165, b: 0 } },    // Orange
+        { hex: "#ffdab9", rgb: { r: 255, g: 218, b: 185 } },  // Peach
+        { hex: "#ffd700", rgb: { r: 255, g: 215, b: 0 } },    // Gold
+        { hex: "#ffff00", rgb: { r: 255, g: 255, b: 0 } },    // Yellow
+        { hex: "#f0e68c", rgb: { r: 240, g: 230, b: 140 } },  // Khaki
+
+        // Greens
+        { hex: "#006400", rgb: { r: 0, g: 100, b: 0 } },      // Dark Green
+        { hex: "#008000", rgb: { r: 0, g: 128, b: 0 } },      // Green
+        { hex: "#00ff00", rgb: { r: 0, g: 255, b: 0 } },      // Lime
+        { hex: "#32cd32", rgb: { r: 50, g: 205, b: 50 } },    // Lime Green
+        { hex: "#90ee90", rgb: { r: 144, g: 238, b: 144 } },  // Light Green
+        { hex: "#00fa9a", rgb: { r: 0, g: 250, b: 154 } },    // Medium Spring Green
+
+        // Blues / Cyans
+        { hex: "#00ced1", rgb: { r: 0, g: 206, b: 209 } },    // Dark Turquoise
+        { hex: "#00ffff", rgb: { r: 0, g: 255, b: 255 } },    // Cyan
+        { hex: "#87ceeb", rgb: { r: 135, g: 206, b: 235 } },  // Sky Blue
+        { hex: "#1e90ff", rgb: { r: 30, g: 144, b: 255 } },   // Dodger Blue
+        { hex: "#0000ff", rgb: { r: 0, g: 0, b: 255 } },      // Blue
+        { hex: "#00008b", rgb: { r: 0, g: 0, b: 139 } },      // Dark Blue
+
+        // Purples
+        { hex: "#4b0082", rgb: { r: 75, g: 0, b: 130 } },     // Indigo
+        { hex: "#8a2be2", rgb: { r: 138, g: 43, b: 226 } },   // Blue Violet
+        { hex: "#800080", rgb: { r: 128, g: 0, b: 128 } },    // Purple
+        { hex: "#ff00ff", rgb: { r: 255, g: 0, b: 255 } },    // Magenta
+
+        // Earth / Neutral
+        { hex: "#8b4513", rgb: { r: 139, g: 69, b: 19 } },    // Saddle Brown
+        { hex: "#a52a2a", rgb: { r: 165, g: 42, b: 42 } },    // Brown
+        { hex: "#f5deb3", rgb: { r: 245, g: 222, b: 179 } },  // Wheat
+        { hex: "#000000", rgb: { r: 0, g: 0, b: 0 } },        // Black
+        { hex: "#808080", rgb: { r: 128, g: 128, b: 128 } },  // Gray
+        { hex: "#ffffff", rgb: { r: 255, g: 255, b: 255 } }   // White
     ];
 
     private buttons: { color?: string, text?: string, x: number, y: number, width: number, height: number, action: () => void }[] = [];
@@ -107,28 +143,38 @@ export class ColoringScene implements Scene {
     createUI() {
         this.buttons = [];
 
-        // Color Palette
-        let x = 50;
-        this.colors.forEach(colorObj => {
+        // Color Palette (Wrap Rows)
+        const btnSize = 40;
+        const gap = 8;
+        // Calculate max columns based on screen width
+        const availableWidth = window.innerWidth - 100; // Left padding + text area safety
+        const maxCols = Math.floor(availableWidth / (btnSize + gap));
+
+        const startX = 40;
+        const startY = window.innerHeight - 180; // Allow more space for rows
+
+        this.colors.forEach((colorObj, index) => {
+            const col = index % maxCols;
+            const row = Math.floor(index / maxCols);
+
             this.buttons.push({
                 color: colorObj.hex,
-                x: x,
-                y: window.innerHeight - 80,
-                width: 50,
-                height: 50,
+                x: startX + col * (btnSize + gap),
+                y: startY + row * (btnSize + gap),
+                width: btnSize,
+                height: btnSize,
                 action: () => {
                     this.currentColor = colorObj.rgb;
                 }
             });
-            x += 60;
         });
 
         // Next Image
         this.buttons.push({
-            text: "Next Pic >",
-            x: window.innerWidth - 300,
+            text: "Next Picture",
+            x: window.innerWidth - 180,
             y: window.innerHeight - 80,
-            width: 120,
+            width: 160,
             height: 50,
             action: () => {
                 this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length;
@@ -138,13 +184,12 @@ export class ColoringScene implements Scene {
 
         // Save
         this.buttons.push({
-            text: "Save Art",
-            x: window.innerWidth - 150,
+            text: "Save",
+            x: window.innerWidth - 300,
             y: window.innerHeight - 80,
-            width: 120,
+            width: 100,
             height: 50,
             action: () => {
-                // To save, we'd export bufferCanvas
                 const link = document.createElement('a');
                 link.download = 'sara_masterpiece.png';
                 link.href = this.bufferCanvas.toDataURL();
