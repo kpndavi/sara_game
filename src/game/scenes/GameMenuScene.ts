@@ -8,6 +8,7 @@ import { TetrisScene } from './TetrisScene';
 import { MazeScene } from './MazeScene';
 import { PuzzleScene } from './PuzzleScene';
 import { HorseRunnerScene } from './HorseRunnerScene';
+import { MemoryScene } from './MemoryScene';
 
 export class GameMenuScene implements Scene {
     private sceneManager: SceneManager;
@@ -43,7 +44,8 @@ export class GameMenuScene implements Scene {
             { name: "Coloring Book", color: "#f1c40f", scene: () => new ColoringScene(this.sceneManager) },
             { name: "Crystal Maze", color: "#1abc9c", scene: () => new MazeScene(this.sceneManager) },
             { name: "Picture Puzzle", color: "#9b59b6", scene: () => new PuzzleScene(this.sceneManager) },
-            { name: "Horse Runner", color: "#3498db", scene: () => new HorseRunnerScene(this.sceneManager) }
+            { name: "Horse Runner", color: "#3498db", scene: () => new HorseRunnerScene(this.sceneManager) },
+            { name: "Memory Magic", color: "#ff9ff3", scene: () => new MemoryScene(this.sceneManager) }
         ];
 
         games.forEach((game, index) => {
