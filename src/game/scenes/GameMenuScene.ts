@@ -4,11 +4,16 @@ import { TitleScene } from './TitleScene';
 import { DrawingScene } from './DrawingScene';
 import { ColoringScene } from './ColoringScene';
 import { TetrisScene } from './TetrisScene';
-// Stubs for new games
-import { MazeScene } from './MazeScene';
-import { PuzzleScene } from './PuzzleScene';
 import { HorseRunnerScene } from './HorseRunnerScene';
 import { MemoryScene } from './MemoryScene';
+import { StarCatchScene } from './StarCatchScene';
+import { ColorMatchScene } from './ColorMatchScene';
+import { BubblePopScene } from './BubblePopScene';
+import { FruitSliceScene } from './FruitSliceScene';
+import { WhackAMoleScene } from './WhackAMoleScene';
+import { FindDifferenceScene } from './FindDifferenceScene';
+import { DressUpChallengeScene } from './DressUpChallengeScene';
+import { CatchHeartsScene } from './CatchHeartsScene';
 
 export class GameMenuScene implements Scene {
     private sceneManager: SceneManager;
@@ -30,27 +35,35 @@ export class GameMenuScene implements Scene {
         const cx = w / 2;
         const cy = h / 2;
 
-        // Grid layout: 2 rows of 3
-        const btnW = 220;
-        const btnH = 120;
-        const gap = 40;
-
-        const startX = cx - (btnW * 1.5 + gap);
-        const startY = cy - (btnH + gap / 2);
+        const columns = w < 760 ? 2 : 3;
+        const btnW = Math.min(220, (w - 80 - (columns - 1) * 24) / columns);
+        const btnH = w < 760 ? 88 : 100;
+        const gap = w < 760 ? 18 : 28;
 
         const games = [
             { name: "Block Party", color: "#e74c3c", scene: () => new TetrisScene(this.sceneManager) },
             { name: "Creative Studio", color: "#f39c12", scene: () => new DrawingScene(this.sceneManager) },
             { name: "Coloring Book", color: "#f1c40f", scene: () => new ColoringScene(this.sceneManager) },
-            { name: "Crystal Maze", color: "#1abc9c", scene: () => new MazeScene(this.sceneManager) },
-            { name: "Picture Puzzle", color: "#9b59b6", scene: () => new PuzzleScene(this.sceneManager) },
             { name: "Horse Runner", color: "#3498db", scene: () => new HorseRunnerScene(this.sceneManager) },
-            { name: "Memory Magic", color: "#ff9ff3", scene: () => new MemoryScene(this.sceneManager) }
+            { name: "Memory Magic", color: "#ff9ff3", scene: () => new MemoryScene(this.sceneManager) },
+            { name: "Star Catch", color: "#6c5ce7", scene: () => new StarCatchScene(this.sceneManager) },
+            { name: "Color Match", color: "#00b894", scene: () => new ColorMatchScene(this.sceneManager) },
+            { name: "Bubble Pop", color: "#0984e3", scene: () => new BubblePopScene(this.sceneManager) },
+            { name: "Fruit Slice", color: "#e17055", scene: () => new FruitSliceScene(this.sceneManager) },
+            { name: "Whack-a-Mole", color: "#0984e3", scene: () => new WhackAMoleScene(this.sceneManager) },
+            { name: "Find Difference", color: "#6c5ce7", scene: () => new FindDifferenceScene(this.sceneManager) },
+            { name: "Dress-Up Challenge", color: "#e84393", scene: () => new DressUpChallengeScene(this.sceneManager) },
+            { name: "Catch the Hearts", color: "#fd79a8", scene: () => new CatchHeartsScene(this.sceneManager) }
         ];
 
         games.forEach((game, index) => {
-            const col = index % 3;
-            const row = Math.floor(index / 3);
+            const col = index % columns;
+            const row = Math.floor(index / columns);
+            const rows = Math.ceil(games.length / columns);
+            const totalHeight = rows * btnH + (rows - 1) * gap;
+            const startX = cx - (columns * btnW + (columns - 1) * gap) / 2;
+            const centeredY = cy - totalHeight / 2 + 24;
+            const startY = Math.max(92, Math.min(centeredY, h - totalHeight - 18));
 
             this.buttons.push({
                 text: game.name,

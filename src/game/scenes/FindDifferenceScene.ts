@@ -1,0 +1,18 @@
+import { Scene } from '../Scene';
+import { SceneManager } from '../SceneManager';
+import { GameMenuScene } from './GameMenuScene';
+import { GameState } from '../GameState';
+
+type Spot = { x: number; y: number; found: boolean };
+export class FindDifferenceScene implements Scene {
+    private sceneManager: SceneManager; private spots: Spot[] = []; private found = 0; private round = 0; private finished = false;
+    constructor(sceneManager: SceneManager) { this.sceneManager = sceneManager; }
+    init(): void { this.reset(); this.sceneManager.getCanvas().addEventListener('pointerup', this.handleInput); }
+    private reset() { this.round = 0; this.found = 0; this.finished = false; this.newRound(); }
+    private newRound() { this.spots = [{ x: 0.25 + Math.random() * 0.2, y: 0.35 + Math.random() * 0.25, found: false }]; }
+    private handleInput = (event: PointerEvent) => { const c = this.sceneManager.getCanvas(), r = c.getBoundingClientRect(); const x = (event.clientX - r.left) * c.width / r.width, y = (event.clientY - r.top) * c.height / r.height; if (x < 115 && y < 70) { this.sceneManager.switchScene(new GameMenuScene(this.sceneManager)); return; } if (this.finished) { this.reset(); return; } const panelW = Math.min(330, (c.width - 60) / 2), left = c.width / 2 - panelW - 10, top = 145, right = c.width / 2 + 10; this.spots.forEach(s => { const sx = s.x * panelW, sy = top + s.y * 250; const hitLeft = Math.hypot(x - (left + sx), y - sy) < 35; const hitRight = Math.hypot(x - (right + sx), y - sy) < 35; if (!s.found && (hitLeft || hitRight)) { s.found = true; this.found++; this.round++; if (this.round >= 5) { this.finished = true; GameState.getInstance().updateHighScore('find-difference', this.found); } else this.newRound(); } }); };
+    update(_deltaTime: number): void { }
+    draw(ctx: CanvasRenderingContext2D): void { const w = ctx.canvas.width, h = ctx.canvas.height, panelW = Math.min(330, (w - 60) / 2), left = w / 2 - panelW - 10, right = w / 2 + 10, top = 145; ctx.fillStyle = '#f5f6fa'; ctx.fillRect(0, 0, w, h); ctx.textAlign = 'center'; ctx.fillStyle = '#6c5ce7'; ctx.font = 'bold 38px "Fredoka One"'; ctx.fillText('Find the Difference', w / 2, 62); ctx.fillStyle = '#2d3436'; ctx.font = 'bold 21px "Nunito"'; ctx.fillText(`Picture ${Math.min(this.round + 1, 5)} / 5   Found: ${this.found}`, w / 2, 98); ctx.fillStyle = '#fab1a0'; ctx.fillRect(15, 18, 90, 40); ctx.fillStyle = 'white'; ctx.font = '20px "Nunito"'; ctx.fillText('Back', 60, 45); if (this.finished) { ctx.fillStyle = '#2d3436'; ctx.font = 'bold 34px "Fredoka One"'; ctx.fillText('You found them all!', w / 2, h / 2); ctx.font = '22px "Nunito"'; ctx.fillText('Tap to play again', w / 2, h / 2 + 48); return; } [left, right].forEach(px => { ctx.fillStyle = '#b8e994'; ctx.fillRect(px, top, panelW, 250); ctx.fillStyle = '#78e08f'; ctx.beginPath(); ctx.arc(px + panelW * 0.28, top + 75, 32, 0, Math.PI * 2); ctx.arc(px + panelW * 0.72, top + 75, 32, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#f6b93b'; ctx.font = '60px serif'; ctx.fillText('🌸', px + panelW * 0.5, top + 165); ctx.font = '48px serif'; ctx.fillText('🦋', px + panelW * 0.22, top + 225); }); const s = this.spots[0]; if (s) { ctx.font = '30px serif'; ctx.fillText('⭐', right + s.x * panelW, top + s.y * 250 + 10); } if (s && s.found) { ctx.beginPath(); ctx.arc(left + s.x * panelW, top + s.y * 250, 36, 0, Math.PI * 2); ctx.arc(right + s.x * panelW, top + s.y * 250, 36, 0, Math.PI * 2); ctx.strokeStyle = '#e84393'; ctx.lineWidth = 5; ctx.stroke(); } }
+    onResize(_width: number, _height: number): void { }
+    cleanup(): void { this.sceneManager.getCanvas().removeEventListener('pointerup', this.handleInput); }
+}
